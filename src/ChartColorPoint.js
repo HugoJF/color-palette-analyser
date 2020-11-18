@@ -3,10 +3,10 @@ import {Draggable} from './Draggable';
 import {useDispatch, useSelector} from "react-redux";
 import cc from 'color-convert';
 
-export function ChartColorPoint({id, colorModel, chartHeight, startingY, x, colorUpdate}) {
+export function ChartColorPoint({id, name, colorModel, chartHeight, startingY, x, colorUpdate}) {
     const dispatch = useDispatch();
     const colors = useSelector(state => state.colors);
-    const rgb = colors[id];
+    const rgb = colors[name][id];
 
     function handleOnMove(position) {
         // This is necessary since p.y origin is at top-left and the plots are at bottom-left
@@ -16,6 +16,7 @@ export function ChartColorPoint({id, colorModel, chartHeight, startingY, x, colo
 
         dispatch.colors.updateColor({
             id,
+            name,
             rgb: newColor
         });
     }

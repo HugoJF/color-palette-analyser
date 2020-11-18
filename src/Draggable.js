@@ -19,6 +19,14 @@ export function Draggable({
         offset: {}
     });
 
+    useEffect(() => {
+        setPosition({
+            ...position,
+            x: startingX,
+            y: startingY,
+        })
+    }, [startingX, startingY]);
+
     const handleMouseDown = useCallback((e) => {
         const bbox = e.target.getBoundingClientRect();
         const x = e.clientX - bbox.left;

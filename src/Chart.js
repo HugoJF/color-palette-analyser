@@ -1,10 +1,12 @@
 import React, {useCallback, useMemo} from 'react';
 import {ChartColorPoint} from "./ChartColorPoint";
+import {useSelector} from "react-redux";
 
-export function Chart({title, colors, colorMaxComponentValue, colorUpdate, colorComponentValue}) {
+export function Chart({title, name, colorMaxComponentValue, colorUpdate, colorComponentValue}) {
     const chartWidth = 1024;
     const chartHeight = 256;
-    const colorCount = Object.values(colors).length;
+    const colors = useSelector(state => state.colors);
+    const colorCount = Object.values(colors[name]).length;
     const gradientStepPercent = 100 / (colorCount - 1);
 
     const indexToX = useCallback((index) => {
@@ -13,14 +15,14 @@ export function Chart({title, colors, colorMaxComponentValue, colorUpdate, color
 
     const componentToY = useCallback((componentValue) => {
         return chartHeight - (componentValue / colorMaxComponentValue) * chartHeight;
-    }, [chartHeight, colorMaxComponentValue, chartHeight]);
+    }, [chartHeight, colorMaxComponentValue]);
 
-    const path = useMemo(() => (
-        Object.values(colors)
+    const path = useMemo(() => {
+        return Object.values(colors[name])
             .map(colorComponentValue)
             .map((c, i) => `${i === 0 ? 'M' : 'L'}${indexToX(i)},${componentToY(c)}`)
             .join(' ')
-    ), [colorComponentValue, indexToX, componentToY, colors]);
+    }, [name, colorComponentValue, indexToX, componentToY, colors]);
 
     return (
         <>
@@ -29,7 +31,7 @@ export function Chart({title, colors, colorMaxComponentValue, colorUpdate, color
 
             {/* Palette colors preview */}
             <div className="w-full flex border">
-                {Object.values(colors).map((c) => (
+                {Object.values(colors[name]).map((c) => (
                     <div className="flex flex-col flex-grow text-gray-700 text-center font-medium bg-gray-200">
                         <div
                             style={{backgroundColor: `rgb(${c.join(',')})`}}
@@ -47,7 +49,7 @@ export function Chart({title, colors, colorMaxComponentValue, colorUpdate, color
             >
                 <defs>
                     <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                        {Object.values(colors).map((c, i) => (
+                        {Object.values(colors[name]).map((c, i) => (
                             <stop
                                 offset={`${gradientStepPercent * i}%`}
                                 stopColor={`rgb(${c.join(',')})`}
@@ -67,16 +69,19 @@ export function Chart({title, colors, colorMaxComponentValue, colorUpdate, color
                 />
 
                 {/* Points */}
-                {Object.entries(colors).map(([id, c], i) => (
-                    <ChartColorPoint
-                        id={id}
-                        x={indexToX(i)}
-                        chartHeight={chartHeight}
-                        colorUpdate={colorUpdate}
-                        startingY={colorComponentValue(c) / colorMaxComponentValue}
-                        colorModel="hsl"
-                    />
-                ))}
+                {
+                    Object.entries(colors[name]).map(([id, c], i) => (
+                        <ChartColorPoint
+                            id={id}
+                            x={indexToX(i)}
+                            name={name}
+                            chartHeight={chartHeight}
+                            colorUpdate={colorUpdate}
+                            startingY={colorComponentValue(c) / colorMaxComponentValue}
+                            colorModel="hsl"
+                        />
+                    ))
+                }
             </svg>
         </>
     );

@@ -4,20 +4,22 @@ import {Chart} from './Chart';
 import {useSelector} from "react-redux";
 
 export default function App() {
-    const [selected, setSelected] = useState(100);
+    const [selectedColor, setSelectedColor] = useState('blue');
     const colors = useSelector(state => state.colors);
 
     return (
         <div className="py-16 mx-auto container">
-            <div className="mx-auto mb-8 w-1/2 container flex justify-center">
-                {Object.entries(colors).map(([id, c]) => (
-                    <div
-                        onClick={() => setSelected(id)}
-                        style={{backgroundColor: `#${cc.rgb.hex(c)}`}}
-                        className={`flex-grow ${
-                            selected === id ? 'border-2 border-black' : ''
-                        } h-16`}
-                    />
+            <div className="mx-auto mb-8 w-1/2 container">
+                {Object.entries(colors).map(([main, p]) => (
+                    <div className="flex">
+                        {Object.entries(p).map(([id, c]) => (
+                            <div
+                                onClick={() => setSelectedColor(main)}
+                                style={{backgroundColor: `#${cc.rgb.hex(c)}`}}
+                                className={`flex-grow h-16`}
+                            />
+                        ))}
+                    </div>
                 ))}
             </div>
 
@@ -25,7 +27,7 @@ export default function App() {
                 <div className="w-1/2 flex flex-col">
                     <Chart
                         title="Hue"
-                        colors={colors}
+                        name={selectedColor}
                         colorUpdate={(c, f) => [360 * f, c[1], c[2]]}
                         colorComponentValue={(c) => (cc.rgb.hsl(c)[0])}
                         colorMaxComponentValue={360}
@@ -33,7 +35,7 @@ export default function App() {
 
                     <Chart
                         title="Saturation"
-                        colors={colors}
+                        name={selectedColor}
                         colorUpdate={(color, factor) => [color[0], 100 * factor, color[2]]}
                         colorComponentValue={(color) => (cc.rgb.hsl(color)[1])}
                         colorMaxComponentValue={100}
@@ -41,7 +43,7 @@ export default function App() {
 
                     <Chart
                         title="Lightness"
-                        colors={colors}
+                        name={selectedColor}
                         colorUpdate={(color, factor) => [color[0], color[1], 100 * factor]}
                         colorComponentValue={(color) => (cc.rgb.hsl(color)[2])}
                         colorMaxComponentValue={100}
