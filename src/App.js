@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import color from 'color-convert';
+import cc from 'color-convert';
 import {Chart} from './Chart';
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 
 export default function App() {
     const [selected, setSelected] = useState(100);
-    const dispatch = useDispatch();
-    const colors = useSelector(state => state.colors)
+    const colors = useSelector(state => state.colors);
 
     return (
         <div className="py-16 mx-auto container">
@@ -14,38 +13,38 @@ export default function App() {
                 {Object.entries(colors).map(([id, c]) => (
                     <div
                         onClick={() => setSelected(id)}
-                        style={{backgroundColor: `#${color.rgb.hex(c)}`}}
+                        style={{backgroundColor: `#${cc.rgb.hex(c)}`}}
                         className={`flex-grow ${
                             selected === id ? 'border-2 border-black' : ''
                         } h-16`}
                     />
                 ))}
             </div>
+
             <div className="flex justify-center">
                 <div className="w-1/2 flex flex-col">
                     <Chart
                         title="Hue"
                         colors={colors}
-                        yCalc={(rgb) => color.rgb.hsl(rgb)[0]}
-                        yMax={360}
-                        update={(c, f) => [360 * f, c[1], c[2]]}
-                        yPos={(height, c) => (1 - color.rgb.hsl(c)[0] / 360) * height}
+                        colorUpdate={(c, f) => [360 * f, c[1], c[2]]}
+                        colorComponentValue={(c) => (cc.rgb.hsl(c)[0])}
+                        colorMaxComponentValue={360}
                     />
+
                     <Chart
                         title="Saturation"
                         colors={colors}
-                        yCalc={(rgb) => color.rgb.hsl(rgb)[1]}
-                        yMax={100}
-                        update={(c, f) => [c[0], 100 * f, c[2]]}
-                        yPos={(height, c) => (1 - color.rgb.hsl(c)[1] / 100) * height}
+                        colorUpdate={(color, factor) => [color[0], 100 * factor, color[2]]}
+                        colorComponentValue={(color) => (cc.rgb.hsl(color)[1])}
+                        colorMaxComponentValue={100}
                     />
+
                     <Chart
                         title="Lightness"
                         colors={colors}
-                        yCalc={(rgb) => color.rgb.hsl(rgb)[2]}
-                        yMax={100}
-                        update={(c, f) => [c[0], c[1], 100 * f]}
-                        yPos={(height, c) => (1 - color.rgb.hsl(c)[2] / 100) * height}
+                        colorUpdate={(color, factor) => [color[0], color[1], 100 * factor]}
+                        colorComponentValue={(color) => (cc.rgb.hsl(color)[2])}
+                        colorMaxComponentValue={100}
                     />
                 </div>
             </div>

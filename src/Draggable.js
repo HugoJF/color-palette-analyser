@@ -1,8 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-
-function clamp(x, min, max) {
-    return Math.min(Math.max(x, min), max);
-}
+import {clamp} from "./utils";
 
 export function Draggable({
                               onMove,
@@ -22,39 +19,39 @@ export function Draggable({
         offset: {}
     });
 
-    const handleMouseDown = (e) => {
+    const handleMouseDown = useCallback((e) => {
         const bbox = e.target.getBoundingClientRect();
         const x = e.clientX - bbox.left;
         const y = e.clientY - bbox.top;
-        console.log(position);
+
         setPosition({
             ...position,
             active: true,
-            offset: {
-                x,
-                y
-            }
+            offset: {x, y}
         });
-    };
+    }, [setPosition, position]);
 
+    // FIXME: handleMouseMove can be called multiple times between renders, figure out a way to avoid this
     const handleMouseMove = useCallback(
         (e) => {
-            if (position.active && el.current) {
-                const bbox = el.current.getBoundingClientRect();
-                const x = e.clientX - bbox.left;
-                const y = e.clientY - bbox.top;
-
-                const n = {
-                    x: clamp(position.x - (position.offset.x - x), minX, maxX),
-                    y: clamp(position.y - (position.offset.y - y), minY, maxY)
-                };
-                setPosition({
-                    ...position,
-                    ...n
-                });
-                console.log(position);
-                onMove(n);
+            if (!position.active || !el.current) {
+                return
             }
+
+            const bbox = el.current.getBoundingClientRect();
+            const x = e.clientX - bbox.left;
+            const y = e.clientY - bbox.top;
+
+            const n = {
+                x: clamp(position.x + x - position.offset.x, minX, maxX),
+                y: clamp(position.y + y - position.offset.y, minY, maxY)
+            };
+
+            setPosition({
+                ...position,
+                ...n
+            });
+            onMove(n);
         },
         [minX, maxX, minY, maxY, onMove, setPosition, position]
     );
@@ -81,6 +78,7 @@ export function Draggable({
 
     return children({
         props: {
+            position,
             ref: el,
             onMouseDown: handleMouseDown,
             onMouseLeave: handleMouseUp,

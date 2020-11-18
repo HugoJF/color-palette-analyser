@@ -1,41 +1,39 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Draggable} from './Draggable';
 import {useDispatch, useSelector} from "react-redux";
-import color from 'color-convert';
+import cc from 'color-convert';
 
-export function ChartColorPoint({id, format, height, positionY, positionX, update}) {
+export function ChartColorPoint({id, colorModel, chartHeight, startingY, x, colorUpdate}) {
     const dispatch = useDispatch();
     const colors = useSelector(state => state.colors);
-    const [position, setPosition] = useState({x: positionX, y: positionY});
     const rgb = colors[id];
 
-    function handleMove(p) {
-        const factor = 1 - p.y / height;
-        const transformedColor = update(color.rgb[format](rgb), factor);
-        const newColor = color[format].rgb(transformedColor);
+    function handleOnMove(position) {
+        // This is necessary since p.y origin is at top-left and the plots are at bottom-left
+        const factor = 1 - (position.y / chartHeight);
+        const transformedColor = colorUpdate(cc.rgb[colorModel](rgb), factor);
+        const newColor = cc[colorModel].rgb(transformedColor);
 
         dispatch.colors.updateColor({
             id,
             rgb: newColor
         });
-
-        setPosition(p);
     }
 
     return (
         <Draggable
-            onMove={handleMove}
-            startingX={positionX}
-            startingY={positionY}
-            minX={positionX}
-            maxX={positionX}
+            onMove={handleOnMove}
+            startingX={x}
+            startingY={(1 - startingY) * chartHeight}
+            minX={x}
+            maxX={x}
             minY={0}
-            maxY={height}
+            maxY={chartHeight}
         >
             {({props}) => (
                 <circle
-                    cx={position.x}
-                    cy={position.y}
+                    cx={props.position.x}
+                    cy={props.position.y}
                     r="10"
                     className="cursor-move"
                     fill="white"
