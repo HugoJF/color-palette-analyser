@@ -7,20 +7,36 @@ export default function App() {
     const [selectedColor, setSelectedColor] = useState('blue');
     const colors = useSelector(state => state.colors);
 
+    const tones = Object.keys(Object.values(colors)[0] || {});
+
     return (
         <div className="py-16 mx-auto container">
-            <div className="mx-auto mb-8 w-1/2 container">
-                {Object.entries(colors).map(([main, p]) => (
-                    <div className="flex">
+            <div className="grid mx-auto mb-8 w-1/2 container">
+                <div className="grid" style={{gridTemplateColumns: `repeat(${tones.length + 1},minmax(0,1fr))`}}>
+                    {/* Tone colors */}
+                    <div/>
+                    {tones.map(tone => <div className="text-center text-gray-600 font-medium">
+                        {tone}
+                    </div>)}
+
+                    {/* Color palette */}
+                    {Object.entries(colors).map(([main, p]) => (<>
+                        {/* Color name */}
+                        <div className="mr-3 flex justify-end items-center text-gray-600 font-medium capitalize">
+                            {main}
+                        </div>
+
+                        {/* Color blocks */}
                         {Object.entries(p).map(([id, c]) => (
                             <div
                                 onClick={() => setSelectedColor(main)}
                                 style={{backgroundColor: `#${cc.rgb.hex(c)}`}}
-                                className={`flex-grow h-16`}
+                                className={`flex-grow h-12`}
                             />
                         ))}
-                    </div>
-                ))}
+                    </>))}
+                </div>
+
             </div>
 
             <div className="flex justify-center">
