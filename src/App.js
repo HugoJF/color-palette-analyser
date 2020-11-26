@@ -65,6 +65,7 @@ export default function App() {
                 </div>
                 <div className="flex flex-col">
                     <Chart
+                        id="color-h"
                         title="Hue"
                         colors={selected1}
                         colorUpdate={(c, f) => [360 * f, c[1], c[2]]}
@@ -73,6 +74,7 @@ export default function App() {
                     />
 
                     <Chart
+                        id="color-s"
                         title="Saturation"
                         colors={selected1}
                         colorUpdate={(color, factor) => [color[0], 100 * factor, color[2]]}
@@ -81,6 +83,7 @@ export default function App() {
                     />
 
                     <Chart
+                        id="color-l"
                         title="Lightness"
                         colors={selected1}
                         colorUpdate={(color, factor) => [color[0], color[1], 100 * factor]}
@@ -90,6 +93,7 @@ export default function App() {
                 </div>
                 <div className="flex flex-col">
                     <Chart
+                        id="tone-h"
                         title="Hue"
                         colors={selected2}
                         colorUpdate={(c, f) => [360 * f, c[1], c[2]]}
@@ -98,6 +102,7 @@ export default function App() {
                     />
 
                     <Chart
+                        id="tone-s"
                         title="Saturation"
                         colors={selected2}
                         colorUpdate={(color, factor) => [color[0], 100 * factor, color[2]]}
@@ -106,6 +111,7 @@ export default function App() {
                     />
 
                     <Chart
+                        id="tone-l"
                         title="Lightness"
                         colors={selected2}
                         colorUpdate={(color, factor) => [color[0], color[1], 100 * factor]}

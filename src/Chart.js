@@ -2,7 +2,7 @@ import React, {useCallback, useMemo} from 'react';
 import {ChartColorPoint} from "./ChartColorPoint";
 import {useSelector} from "react-redux";
 
-export function Chart({title, colors, colorMaxComponentValue, colorUpdate, colorComponentValue}) {
+export function Chart({id, title, colors, colorMaxComponentValue, colorUpdate, colorComponentValue}) {
     const chartWidth = 1024;
     const chartHeight = 256;
     const colorCount = colors.length;
@@ -48,7 +48,7 @@ export function Chart({title, colors, colorMaxComponentValue, colorUpdate, color
                 viewBox={`0 0 ${chartWidth} ${chartHeight}`}
             >
                 <defs>
-                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="0%">
                         {colors.map((c, i) => (
                             <stop
                                 offset={`${gradientStepPercent * i}%`}
@@ -63,7 +63,7 @@ export function Chart({title, colors, colorMaxComponentValue, colorUpdate, color
                 <path
                     d={path}
                     fill="none"
-                    stroke="url(#grad1)"
+                    stroke={`url(#${id})`}
                     strokeWidth="5"
                     strokeLinecap="round"
                 />
