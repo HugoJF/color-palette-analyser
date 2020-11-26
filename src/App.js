@@ -9,6 +9,14 @@ export default function App() {
 
     const tones = Object.keys(Object.values(colors)[0] || {});
 
+    const selected = Object
+        .entries(colors[selectedColor])
+        .map(([id, color]) => ({
+            id,
+            name: selectedColor,
+            color,
+        }));
+
     return (
         <div className="py-16 mx-auto container">
             <div className="grid mx-auto mb-8 w-1/2 container">
@@ -43,7 +51,7 @@ export default function App() {
                 <div className="w-1/2 flex flex-col">
                     <Chart
                         title="Hue"
-                        name={selectedColor}
+                        colors={selected}
                         colorUpdate={(c, f) => [360 * f, c[1], c[2]]}
                         colorComponentValue={(c) => (cc.rgb.hsl(c)[0])}
                         colorMaxComponentValue={360}
@@ -51,7 +59,7 @@ export default function App() {
 
                     <Chart
                         title="Saturation"
-                        name={selectedColor}
+                        colors={selected}
                         colorUpdate={(color, factor) => [color[0], 100 * factor, color[2]]}
                         colorComponentValue={(color) => (cc.rgb.hsl(color)[1])}
                         colorMaxComponentValue={100}
@@ -59,7 +67,7 @@ export default function App() {
 
                     <Chart
                         title="Lightness"
-                        name={selectedColor}
+                        colors={selected}
                         colorUpdate={(color, factor) => [color[0], color[1], 100 * factor]}
                         colorComponentValue={(color) => (cc.rgb.hsl(color)[2])}
                         colorMaxComponentValue={100}

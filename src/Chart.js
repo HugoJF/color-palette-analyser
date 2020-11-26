@@ -2,11 +2,10 @@ import React, {useCallback, useMemo} from 'react';
 import {ChartColorPoint} from "./ChartColorPoint";
 import {useSelector} from "react-redux";
 
-export function Chart({title, name, colorMaxComponentValue, colorUpdate, colorComponentValue}) {
+export function Chart({title, colors, colorMaxComponentValue, colorUpdate, colorComponentValue}) {
     const chartWidth = 1024;
     const chartHeight = 256;
-    const colors = useSelector(state => state.colors);
-    const colorCount = Object.values(colors[name]).length;
+    const colorCount = colors.length;
     const gradientStepPercent = 100 / (colorCount - 1);
 
     const indexToX = useCallback((index) => {
@@ -18,11 +17,12 @@ export function Chart({title, name, colorMaxComponentValue, colorUpdate, colorCo
     }, [chartHeight, colorMaxComponentValue]);
 
     const path = useMemo(() => {
-        return Object.values(colors[name])
+        return colors
+            .map(c => c.color)
             .map(colorComponentValue)
             .map((c, i) => `${i === 0 ? 'M' : 'L'}${indexToX(i)},${componentToY(c)}`)
             .join(' ')
-    }, [name, colorComponentValue, indexToX, componentToY, colors]);
+    }, [colorComponentValue, indexToX, componentToY, colors]);
 
     return (
         <>
@@ -31,13 +31,13 @@ export function Chart({title, name, colorMaxComponentValue, colorUpdate, colorCo
 
             {/* Palette colors preview */}
             <div className="w-full flex border">
-                {Object.values(colors[name]).map((c) => (
+                {colors.map((c) => (
                     <div className="flex flex-col flex-grow text-gray-700 text-center font-medium bg-gray-200">
                         <div
-                            style={{backgroundColor: `rgb(${c.join(',')})`}}
+                            style={{backgroundColor: `rgb(${c.color.join(',')})`}}
                             className="h-1"
                         />
-                        <div className="py-2">{colorComponentValue(c)}</div>
+                        <div className="py-2">{colorComponentValue(c.color)}</div>
                     </div>
                 ))}
             </div>
@@ -49,10 +49,10 @@ export function Chart({title, name, colorMaxComponentValue, colorUpdate, colorCo
             >
                 <defs>
                     <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                        {Object.values(colors[name]).map((c, i) => (
+                        {colors.map((c, i) => (
                             <stop
                                 offset={`${gradientStepPercent * i}%`}
-                                stopColor={`rgb(${c.join(',')})`}
+                                stopColor={`rgb(${c.color.join(',')})`}
                                 stopOpacity="1"
                             />
                         ))}
@@ -70,14 +70,15 @@ export function Chart({title, name, colorMaxComponentValue, colorUpdate, colorCo
 
                 {/* Points */}
                 {
-                    Object.entries(colors[name]).map(([id, c], i) => (
+                    colors.map(({id, name, color}, i) => (
                         <ChartColorPoint
                             id={id}
-                            x={indexToX(i)}
+                            color={color}
                             name={name}
+                            x={indexToX(i)}
                             chartHeight={chartHeight}
                             colorUpdate={colorUpdate}
-                            startingY={colorComponentValue(c) / colorMaxComponentValue}
+                            startingY={colorComponentValue(color) / colorMaxComponentValue}
                             colorModel="hsl"
                         />
                     ))

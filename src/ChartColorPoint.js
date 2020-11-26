@@ -3,15 +3,13 @@ import {Draggable} from './Draggable';
 import {useDispatch, useSelector} from "react-redux";
 import cc from 'color-convert';
 
-export function ChartColorPoint({id, name, colorModel, chartHeight, startingY, x, colorUpdate}) {
+export function ChartColorPoint({id, name, color, colorModel, chartHeight, startingY, x, colorUpdate}) {
     const dispatch = useDispatch();
-    const colors = useSelector(state => state.colors);
-    const rgb = colors[name][id];
 
     function handleOnMove(position) {
         // This is necessary since p.y origin is at top-left and the plots are at bottom-left
         const factor = 1 - (position.y / chartHeight);
-        const transformedColor = colorUpdate(cc.rgb[colorModel](rgb), factor);
+        const transformedColor = colorUpdate(cc.rgb[colorModel](color), factor);
         const newColor = cc[colorModel].rgb(transformedColor);
 
         dispatch.colors.updateColor({
@@ -38,7 +36,7 @@ export function ChartColorPoint({id, name, colorModel, chartHeight, startingY, x
                     r="10"
                     className="cursor-move"
                     fill="white"
-                    stroke={`rgb(${rgb.join(',')})`}
+                    stroke={`rgb(${color.join(',')})`}
                     strokeWidth="5"
                     {...props}
                 />
