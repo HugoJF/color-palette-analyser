@@ -1,8 +1,10 @@
 import React, {useCallback, useMemo} from 'react';
 import {ChartColorPoint} from "./ChartColorPoint";
-import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
+import cc from 'color-convert';
 
 export function Chart({id, title, colors, colorMaxComponentValue, colorUpdate, colorComponentValue}) {
+    const dispatch = useDispatch();
     const chartWidth = 1024;
     const chartHeight = 256;
     const colorCount = colors.length;
@@ -27,17 +29,34 @@ export function Chart({id, title, colors, colorMaxComponentValue, colorUpdate, c
     return (
         <>
             {/* Chart title */}
-            <h2 className="text-lg font-medium">{title}</h2>
+            <h2 className="mt-4 text-xl">{title}</h2>
 
             {/* Palette colors preview */}
             <div className="w-full flex border">
                 {colors.map((c) => (
-                    <div className="flex flex-col flex-grow text-gray-700 text-center font-medium bg-gray-200">
+                    <div className="flex items-stretch flex-col flex-grow text-gray-700 text-center font-medium bg-gray-200">
                         <div
                             style={{backgroundColor: `rgb(${c.color.join(',')})`}}
-                            className="h-1"
+                            className="h-3"
                         />
-                        <div className="py-2">{colorComponentValue(c.color)}</div>
+                        <input
+                            type="number"
+                            onChange={e => {
+                                const factor = e.target.value / colorMaxComponentValue;
+                                const currentColor = cc.rgb.hsl.raw(c.color);
+                                const newColor = colorUpdate(currentColor, factor);
+                                const rgb = cc.hsl.rgb.raw(newColor);
+
+                                console.log({factor, currentColor, newColor, rgb});
+                                dispatch.colors.updateColor({
+                                    id: c.id,
+                                    name: c.name,
+                                    rgb: rgb,
+                                });
+                            }}
+                            value={Math.round(colorComponentValue(c.color))}
+                            className="block w-full py-2 text-gray-700 text-center text-sm font-medium bg-transparent"
+                        />
                     </div>
                 ))}
             </div>

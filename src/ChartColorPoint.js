@@ -1,6 +1,6 @@
 import React from 'react';
 import {Draggable} from './Draggable';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import cc from 'color-convert';
 
 export function ChartColorPoint({id, name, color, colorModel, chartHeight, startingY, x, colorUpdate}) {
@@ -9,8 +9,8 @@ export function ChartColorPoint({id, name, color, colorModel, chartHeight, start
     function handleOnMove(position) {
         // This is necessary since p.y origin is at top-left and the plots are at bottom-left
         const factor = 1 - (position.y / chartHeight);
-        const transformedColor = colorUpdate(cc.rgb[colorModel](color), factor);
-        const newColor = cc[colorModel].rgb(transformedColor);
+        const transformedColor = colorUpdate(cc.rgb[colorModel].raw(color), factor);
+        const newColor = cc[colorModel].rgb.raw(transformedColor);
 
         dispatch.colors.updateColor({
             id,

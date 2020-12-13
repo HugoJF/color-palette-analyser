@@ -54,7 +54,7 @@ export default function App() {
                                             setSelectedColor(main)
                                             setSelectedTone(id);
                                         }}
-                                        style={{backgroundColor: `#${cc.rgb.hex(c)}`}}
+                                        style={{backgroundColor: `#${cc.rgb.hex.raw(c)}`}}
                                         className={`flex-grow h-12`}
                                     />
                                 ))}
@@ -69,7 +69,7 @@ export default function App() {
                         title="Hue"
                         colors={selected1}
                         colorUpdate={(c, f) => [360 * f, c[1], c[2]]}
-                        colorComponentValue={(c) => (cc.rgb.hsl(c)[0])}
+                        colorComponentValue={(c) => (cc.rgb.hsl.raw(c)[0])}
                         colorMaxComponentValue={360}
                     />
 
@@ -78,7 +78,7 @@ export default function App() {
                         title="Saturation"
                         colors={selected1}
                         colorUpdate={(color, factor) => [color[0], 100 * factor, color[2]]}
-                        colorComponentValue={(color) => (cc.rgb.hsl(color)[1])}
+                        colorComponentValue={(color) => (cc.rgb.hsl.raw(color)[1])}
                         colorMaxComponentValue={100}
                     />
 
@@ -87,7 +87,7 @@ export default function App() {
                         title="Lightness"
                         colors={selected1}
                         colorUpdate={(color, factor) => [color[0], color[1], 100 * factor]}
-                        colorComponentValue={(color) => (cc.rgb.hsl(color)[2])}
+                        colorComponentValue={(color) => (cc.rgb.hsl.raw(color)[2])}
                         colorMaxComponentValue={100}
                     />
                 </div>
@@ -97,7 +97,7 @@ export default function App() {
                         title="Hue"
                         colors={selected2}
                         colorUpdate={(c, f) => [360 * f, c[1], c[2]]}
-                        colorComponentValue={(c) => (cc.rgb.hsl(c)[0])}
+                        colorComponentValue={(c) => (cc.rgb.hsl.raw(c)[0])}
                         colorMaxComponentValue={360}
                     />
 
@@ -106,7 +106,7 @@ export default function App() {
                         title="Saturation"
                         colors={selected2}
                         colorUpdate={(color, factor) => [color[0], 100 * factor, color[2]]}
-                        colorComponentValue={(color) => (cc.rgb.hsl(color)[1])}
+                        colorComponentValue={(color) => (cc.rgb.hsl.raw(color)[1])}
                         colorMaxComponentValue={100}
                     />
 
@@ -115,7 +115,7 @@ export default function App() {
                         title="Lightness"
                         colors={selected2}
                         colorUpdate={(color, factor) => [color[0], color[1], 100 * factor]}
-                        colorComponentValue={(color) => (cc.rgb.hsl(color)[2])}
+                        colorComponentValue={(color) => (cc.rgb.hsl.raw(color)[2])}
                         colorMaxComponentValue={100}
                     />
                 </div>
